@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Happy 16th Birthday Mimu! 🎂✨</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;family=Dancing+Script:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #f8e8ff 50%, #ffe8f0 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Floating Hearts Snow Effect */
+        .snow-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            font-size: 20px;
+            animation: fall linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            z-index: 1000;
+            transition: all 0.8s ease-in-out;
+        }
+
+        .welcome-screen.hidden {
+            opacity: 0;
+            transform: translateY(-100%);
+            pointer-events: none;
+        }
+
+        .welcome-text {
+            text-align: center;
+            color: #8b1538;
+            margin-bottom: 40px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .welcome-text h1 {
+            font-family: Arial;
+            font-size: clamp(2rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .welcome-text p {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            font-weight: 400;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .start-btn {
+            background: linear-gradient(45deg, #ff6b9d, #ffc3e0);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
+        }
+
+        .start-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Game Section */
+        .game-section {
+            position: relative;
+            min-height: 100vh;
+            padding: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .game-section.active {
+            display: flex;
+        }
+
+        .score-display {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #8b1538;
+            z-index: 200;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: float 3s ease-in-out infinite;
+            z-index: 150;
+        }
+
+        .floating-heart:hover {
+            transform: scale(1.3);
+        }
+
+        .floating-heart.clicked {
+            animation: heartPop 0.5s ease-out forwards;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        @keyframes heartPop {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Letter Section */
+        .letter-section {
+            position: relative;
+            min-height: 100vh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .letter-section.active {
+            display: flex;
+        }
+
+        .letter-box {
+            background: linear-gradient(45deg, #fff, #ffe8f0);
+            width: 200px;
+            height: 150px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(255, 107, 157, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .letter-box:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 30px 60px rgba(255, 107, 157, 0.5);
+        }
+
+        .letter-box::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shine 3s ease-in-out infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .letter-box .envelope {
+            font-size: 60px;
+            color: #ff6b9d;
+        }
+
+        .letter-instruction {
+            text-align: center;
+            color: #8b1538;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            font-weight: 500;
+            max-width: 600px;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #fff 0%, #ffe8f0 100%);
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.5s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            0% {
+                transform: scale(0.7) translateY(50px);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: #8b1538;
+            margin-bottom: 10px;
+        }
+
+        .modal-body {
+            color: #8b1538;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .modal-body p {
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: linear-gradient(45deg, #ff6b9d, #ffc3e0);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            animation: heartbeat 2s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 50%, 100% {
+                transform: scale(1);
+            }
+            25%, 75% {
+                transform: scale(1.05);
+            }
+        }
+
+        .close-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 107, 157, 0.4);
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1500;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff6b9d;
+            animation: confettiFall 3s linear infinite;
+        }
+
+        .confetti-piece:nth-child(2n) {
+            background: #ffc3e0;
+        }
+
+        .confetti-piece:nth-child(3n) {
+            background: #ff9a9e;
+        }
+
+        .confetti-piece:nth-child(4n) {
+            background: #ffeef8;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modal-content {
+                padding: 25px;
+                margin: 10px;
+            }
+
+            .modal-header h2 {
+                font-size: 2rem;
+            }
+
+            .modal-body {
+                font-size: 1rem;
+            }
+
+            .floating-heart {
+                font-size: 35px;
+            }
+
+            .letter-box {
+                width: 150px;
+                height: 120px;
+            }
+
+            .letter-box .envelope {
+                font-size: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                padding: 20px;
+            }
+
+            .floating-heart {
+                font-size: 30px;
+            }
+
+            .score-display {
+                font-size: 1.2rem;
+                padding: 10px 20px;
+            }
+        }
+    
+        /* Score Celebration - Premium & Cute */
+        .score-celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #ffeef8, #ffc3e0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .score-celebration .big-score {
+            font-size: 5rem;
+            color: #d4145a;
+            font-weight: 700;
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+            animation: pulse 1.5s infinite;
+            transition: all 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .score-celebration.fade-out {
+            animation: fadeOut 1.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(1.2); }
+        }
+            to { opacity: 0; }
+        }
+
+
+/* Popup Snowflakes */
+.popup-snow {
+    z-index: 3000;
+    pointer-events: none;
+}
+</style>
+</head>
+<body>
+<audio id="birthdayTune"><source src="letter-open.mp3" type="audio/wav"/></audio><audio id="winSound"><source src="game-win.mp3" type="audio/wav"/></audio>
+
+<!-- Snow Effect -->
+<div class="snow-container" id="snowContainer"></div>
+<!-- Background Music -->
+<audio id="bgMusic" loop="">
+<source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/mp3"/>
+<!-- Placeholder for royalty-free birthday music -->
+</audio>
+<!-- Welcome Screen -->
+<div class="welcome-screen" id="welcomeScreen">
+<div class="welcome-text">
+<h1>🎉 Welcome Mimu 👋</h1>
+<p>Please play this game a few. Something special for you...</p>
+</div>
+<button class="start-btn" onclick="startGame()">Start Game ❤️</button>
+</div>
+<!-- Game Section -->
+<div class="game-section" id="gameSection">
+<div class="score-display" id="scoreDisplay">Score: 0/16</div>
+</div>
+<!-- Letter Section -->
+<div class="letter-section" id="letterSection">
+<div class="letter-box" onclick="openLetter()">
+<div class="envelope">💌</div>
+</div>
+<p class="letter-instruction">Mimu, please click the letter to read my letter 💌</p>
+</div>
+<!-- Modal -->
+<div class="modal" id="letterModal">
+<div class="modal-content">
+<div class="modal-header">
+<h2>🎂 Happy Birthday, Mimu! 🎂</h2>
+<p style="font-size: 1.3rem; color: #ff6b9d; font-weight: 600;">Finally Sweet 16! 💖</p>
+</div>
+<div class="modal-body">
+<p>Ajker din ta hok tomar jonne ekdom special, age 16 complete ekhon life suru hok abar notun kore.</p>
+<p>Amader moddhe onk distance ache, and oi distance er kache bar bar here jacchi. Ajker moto special dineo tomake physically kono gift dite partechi na but tomar jonno ekta boro virtual hugs pathacchi 🫂</p>
+<p>Tomar jonno amar heart e onk onk bhalobasha ache, always bhalo thako, sustho thako and happy thako 😊🖤</p>
+<p>R tomar kache ekta request... ajker ei dine ami jevabe tomar life e achi next year eo jeno ei vabei thakte pari.</p>
+<p><strong>Please.... chere jeyo na amake 🥺</strong></p>
+<p>Jai hok ajker ei din ta tomar jonno hok onk beshi special.</p>
+<p><strong>Once again Happy birthday to you, Mimu!<br/>
+                Celebrate, smile and enjoy your special day 🎉🖤</strong></p>
+</div>
+<button class="close-btn" onclick="closeLetter()">Close ❤️</button>
+</div>
+</div>
+<!-- Confetti Container -->
+<div class="confetti" id="confetti"></div>
+<script>
+        let score = 0;
+        let gameActive = false;
+        let heartsClicked = 0;
+        const totalHearts = 16;
+
+        // Background Music
+        const bgMusic = document.getElementById('bgMusic');
+        bgMusic.volume = 0.3;
+
+        // Snow Effect
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            
+            const emojis = ['❤️', '💖', '💌', '🥰'];
+            snowflake.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            snowflake.style.left = Math.random() * 100 + '%';
+            snowflake.style.animationDuration = Math.random() * 3 + 5 + 's';
+            snowflake.style.opacity = Math.random() * 0.8 + 0.2;
+            
+            document.getElementById('snowContainer').appendChild(snowflake);
+            
+            setTimeout(() => {
+                snowflake.remove();
+            }, 8000);
+        }
+
+        setInterval(createSnowflake, 300);
+
+        // Start Game Function
+        function startGame() {
+            try {
+                bgMusic.play();
+            } catch (e) {
+                console.log('Audio autoplay prevented by browser');
+            }
+            
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            
+            setTimeout(() => {
+                document.getElementById('gameSection').classList.add('active');
+                initializeGame();
+            }, 800);
+        }
+
+        // Initialize Game
+        function initializeGame() {
+            gameActive = true;
+            score = 0;
+            heartsClicked = 0;
+            
+            for (let i = 0; i < totalHearts; i++) {
+                createFloatingHeart();
+            }
+        }
+
+        // Create Floating Heart
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.textContent = '❤️';
+            
+            // Random position
+            heart.style.left = Math.random() * (window.innerWidth - 80) + 'px';
+            heart.style.top = Math.random() * (window.innerHeight - 200) + 100 + 'px';
+            
+            heart.addEventListener('click', function() {
+                if (gameActive && !heart.classList.contains('clicked')) {
+                    heart.classList.add('clicked');
+                    heartsClicked++;
+                    score++;
+                    updateScore();
+                    
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 500);
+                    
+                    if (heartsClicked === totalHearts) {
+                        endGame();
+                    }
+                }
+            });
+            
+            document.getElementById('gameSection').appendChild(heart);
+        }
+
+        // Update Score
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `Score: ${score}/${totalHearts}`;
+        }
+
+        
+        // End Game
+        function endGame() {
+            gameActive = false;
+            document.getElementById('gameSection').classList.remove('active');
+
+            const scoreCelebration = document.createElement('div');
+            scoreCelebration.classList.add('score-celebration');
+            scoreCelebration.innerHTML = '<div class="big-score" id="bigScore">16</div>';
+            document.body.appendChild(scoreCelebration);
+
+            // Animate 16 ➜ 16th Birthday ➜ letter box transition
+            setTimeout(() => {
+                document.getElementById('bigScore').textContent = '16th Birthday';
+                document.getElementById('bigScore').style.fontSize = '3rem';
+            }, 2000);
+
+            setTimeout(() => {
+                scoreCelebration.classList.add('fade-out');
+                setTimeout(() => {
+                    scoreCelebration.remove();
+                    document.getElementById('letterSection').classList.add('active');
+                }, 1000);
+            }, 4500);
+        }
+
+
+        // Open Letter
+        function openLetter() {
+            document.getElementById('letterModal').classList.add('active');
+            createConfetti();
+        }
+
+        // Close Letter
+        function closeLetter() {
+            document.getElementById('letterModal').classList.remove('active');
+            clearConfetti();
+        }
+
+        // Create Confetti
+        function createConfetti() {
+            const confettiContainer = document.getElementById('confetti');
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confettiPiece = document.createElement('div');
+                    confettiPiece.classList.add('confetti-piece');
+                    confettiPiece.style.left = Math.random() * 100 + '%';
+                    confettiPiece.style.animationDelay = Math.random() * 2 + 's';
+                    confettiContainer.appendChild(confettiPiece);
+                    
+                    setTimeout(() => {
+                        confettiPiece.remove();
+                    }, 3000);
+                }, i * 50);
+            }
+        }
+
+        // Clear Confetti
+        function clearConfetti() {
+            const confetti = document.getElementById('confetti');
+            confetti.innerHTML = '';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('letterModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLetter();
+            }
+        });
+
+        // Responsive heart positioning on resize
+        window.addEventListener('resize', function() {
+            const hearts = document.querySelectorAll('.floating-heart');
+            hearts.forEach(heart => {
+                if (!heart.classList.contains('clicked')) {
+                    heart.style.left = Math.random() * (window.innerWidth - 80) + 'px';
+                    heart.style.top = Math.random() * (window.innerHeight - 200) + 100 + 'px';
+                }
+            });
+        });
+
+        // Prevent right-click context menu on hearts
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.classList.contains('floating-heart')) {
+                e.preventDefault();
+            }
+        });
+    
+// Special Popup Snow
+function createPopupSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.classList.add('snowflake', 'popup-snow');
+    const emojis = ['💖', '⭐', '💘', '🌟', '💫', '💞', '🎉', '❤️‍🔥'];
+    snowflake.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    snowflake.style.left = Math.random() * 100 + '%';
+    snowflake.style.animationDuration = Math.random() * 2 + 3 + 's';
+    snowflake.style.opacity = Math.random() * 0.6 + 0.4;
+    document.getElementById('popupSnowContainer').appendChild(snowflake);
+    setTimeout(() => snowflake.remove(), 6000);
+}
+
+function showPopupSnow() {
+    popupSnowInterval = setInterval(createPopupSnowflake, 150);
+}
+
+function hidePopupSnow() {
+    clearInterval(popupSnowInterval);
+    document.getElementById('popupSnowContainer').innerHTML = '';
+}
+
+let popupSnowInterval = null;
+
+document.getElementById('letterModal').addEventListener('click', function(e) {
+    if (e.target.classList.contains('close-btn') || e.target === this) {
+        closeLetter();
+        hidePopupSnow();
+    }
+});
+
+const openOriginal = openLetter;
+openLetter = function() {
+    openOriginal();
+    showPopupSnow();
+};
+
+const winSound = document.getElementById('winSound');
+const birthdayTune = document.getElementById('birthdayTune');
+
+winSound.volume = 0.5;
+birthdayTune.volume = 0.1;
+
+// Mute background music on game end and play win sound
+const endOriginal = endGame;
+endGame = function() {
+    bgMusic.pause();
+    bgMusic.currentTime = 0;
+    winSound.play();
+    endOriginal();
+    setTimeout(() => {
+        winSound.pause();
+        winSound.currentTime = 0;
+    }, 4500);
+};
+
+// Play birthday tune on letter open
+const openLetterOriginal = openLetter;
+openLetter = function() {
+    openLetterOriginal();
+    birthdayTune.currentTime = 0;
+    birthdayTune.play();
+    showPopupSnow();
+};
+
+// Stop birthday music on close
+const closeLetterOriginal = closeLetter;
+closeLetter = function() {
+    closeLetterOriginal();
+    birthdayTune.pause();
+    birthdayTune.currentTime = 0;
+    hidePopupSnow();
+};
+
+// Pause all music when tab loses focus
+window.addEventListener('blur', () => {
+    bgMusic.pause();
+    winSound.pause();
+    birthdayTune.pause();
+});
+</script>
+<div class="snow-container" id="popupSnowContainer"></div></body>
+</html>
